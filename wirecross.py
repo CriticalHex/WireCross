@@ -69,13 +69,13 @@ while running:
             ports = setup()
             wires: list[Wire] = []
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if hovering is not None and edit is None and hovering.wired == False:
+            if hovering is not None and edit is None and not hovering.wired:
                 start = hovering
                 wires.append(Wire(MousePos, hovering.color))
                 edit = wires[-1]
         if event.type == pygame.MOUSEBUTTONUP:
             if len(wires) > 0:
-                if hovering is not None and hovering is not start and hovering.wired == False and edit is not None:
+                if hovering is not None and hovering is not start and not hovering.wired and edit is not None:
                     if hovering.color != edit.color:
                         wires.pop(-1)
                     else:
