@@ -3,10 +3,10 @@ import pygame
 import random
 pygame.init()
 
-BLUE = (0,0,255)
+BLUE = (0,0,200)
 PINK = (200,0,200)
-RED = (255,0,0)
-YELLOW = (255,255,0)
+RED = (200,0,0)
+GREEN = (0,100,0)
 WHITE = (255,255,255)
 
 class Port:
@@ -36,7 +36,7 @@ def setup():
     RPos = [(550,100),(550,300),(550,500),(550,700)]
     random.shuffle(LPos)
     random.shuffle(RPos)
-    return [Port(RED, LPos[0]),Port(YELLOW, LPos[1]),Port(PINK, LPos[2]),Port(BLUE, LPos[3]),Port(RED, RPos[0]),Port(YELLOW, RPos[1]),Port(PINK, RPos[2]),Port(BLUE, RPos[3])]
+    return [Port(RED, LPos[0]),Port(GREEN, LPos[1]),Port(PINK, LPos[2]),Port(BLUE, LPos[3]),Port(RED, RPos[0]),Port(GREEN, RPos[1]),Port(PINK, RPos[2]),Port(BLUE, RPos[3])]
 
 def getPort(mousePos, ports: list[Port]):
     for p in ports:
@@ -45,7 +45,10 @@ def getPort(mousePos, ports: list[Port]):
     return None
 
 def highlight(screen, port: Port):
-    pygame.draw.rect(screen, WHITE, (port.x, port.y, port.w, port.h), 1, 1)
+    pygame.draw.rect(screen, WHITE, (port.x, port.y, port.w, port.h), 1)
+    
+def center(port: Port):
+    return (port.x + (port.w/2), port.y + (port.h/2))
 
 screen = pygame.display.set_mode((800,800))
 MousePos = (0,0)
@@ -71,7 +74,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if hovering is not None and edit is None and not hovering.wired:
                 start = hovering
-                wires.append(Wire(MousePos, hovering.color))
+                wires.append(Wire(center(hovering), hovering.color))
                 edit = wires[-1]
         if event.type == pygame.MOUSEBUTTONUP:
             if len(wires) > 0:
@@ -79,6 +82,7 @@ while running:
                     if hovering.color != edit.color:
                         wires.pop(-1)
                     else:
+                        edit.stopPos = center(hovering)
                         hovering.wired = True
                         start.wired = True
                         edit.set = True
